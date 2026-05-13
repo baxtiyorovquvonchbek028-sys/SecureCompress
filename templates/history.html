@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Fayl tarixi — SecureCompress{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">Fayl <span class="accent">tarixi</span></h1>
+        <p class="page-sub">So'nggi 50 ta ishlangan fayl</p>
+    </div>
+</div>
+
+<div class="history-container">
+    {% if records %}
+    <div class="history-table-wrap glass-card">
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Fayl nomi</th>
+                    <th>Asl hajm</th>
+                    <th>Siqilgan</th>
+                    <th>Hash (qisqa)</th>
+                    <th>Sana</th>
+                    <th>Holat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for rec in records %}
+                <tr class="{{ 'expired-row' if rec.is_expired else '' }}">
+                    <td class="file-col">
+                        <span class="file-ico">📄</span>
+                        {{ rec.filename }}
+                    </td>
+                    <td>{{ (rec.original_size / 1024)|round(1) }} KB</td>
+                    <td>
+                        {{ (rec.compressed_size / 1024)|round(1) }} KB
+                        <span class="ratio-badge">
+                            {{ ((1 - rec.compressed_size / rec.original_size) * 100)|round(0)|int }}% tejash
+                        </span>
+                    </td>
+                    <td class="mono hash-short" title="{{ rec.hash_sha256 }}">
+                        {{ rec.hash_sha256[:12] }}...
+                    </td>
+                    <td>{{ rec.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                    <td>
+                        {% if rec.is_expired %}
+                        <span class="badge badge-expired">Muddati tugagan</span>
+                        {% else %}
+                        <span class="badge badge-active">Aktiv</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state glass-card">
+        <div class="empty-icon">📂</div>
+        <h3>Tarix bo'sh</h3>
+        <p>Hali hech qanday fayl yuklanmagan</p>
+        <a href="/upload" class="btn btn-primary">Fayl yuklash</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

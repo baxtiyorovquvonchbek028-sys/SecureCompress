@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SecureCompress{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+
+    <nav class="navbar">
+        <a href="/" class="nav-logo">
+            <span class="logo-icon">⟨SC⟩</span>
+            <span class="logo-text">SecureCompress</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">Bosh sahifa</a></li>
+            <li><a href="/upload" class="nav-link {% if request.path == '/upload' %}active{% endif %}">Yuklash</a></li>
+            <li><a href="/verify" class="nav-link {% if request.path == '/verify' %}active{% endif %}">Tekshirish</a></li>
+            <li><a href="/history" class="nav-link {% if request.path == '/history' %}active{% endif %}">Tarix</a></li>
+            <li><a href="/security" class="nav-link {% if request.path == '/security' %}active{% endif %}">Xavfsizlik</a></li>
+            <li><a href="/admin" class="nav-link nav-admin {% if request.path == '/admin' %}active{% endif %}">Admin</a></li>
+        </ul>
+        <button class="nav-hamburger" id="hamburger">☰</button>
+    </nav>
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-inner">
+            <span class="footer-brand">⟨SC⟩ SecureCompress</span>
+            <span class="footer-copy">© 2024 — AES-256 • SHA-256 • PBKDF2</span>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

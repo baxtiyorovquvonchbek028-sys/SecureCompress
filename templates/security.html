@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}Xavfsizlik — SecureCompress{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">Axborot <span class="accent">xavfsizligi</span></h1>
+        <p class="page-sub">Ma'lumot sirqishidan himoyalanish bo'yicha to'liq qo'llanma</p>
+    </div>
+</div>
+
+<div class="security-container">
+
+    <!-- What is data leak -->
+    <div class="glass-card sec-card">
+        <div class="sec-card-header">
+            <div class="sec-num">01</div>
+            <h2>Axborot sirqishi nima?</h2>
+        </div>
+        <div class="sec-body">
+            <p>Axborot sirqishi (Data Leak) — maxfiy yoki muhim ma'lumotlarning ruxsatsiz shaxslarga, tashkilotlarga yoki ommaga oshkor bo'lishi hodisasidir.</p>
+            <div class="leak-types">
+                <div class="leak-type">
+                    <span class="lt-icon">😈</span>
+                    <div>
+                        <strong>Xakerlik hujumi</strong>
+                        <p>Tashqi buzg'unchining tizimlarga kirib, ma'lumotlarni o'g'irlashi</p>
+                    </div>
+                </div>
+                <div class="leak-type">
+                    <span class="lt-icon">👤</span>
+                    <div>
+                        <strong>Ichki tahdid</strong>
+                        <p>Xodimlar tomonidan bilmasdan yoki qasddan ma'lumot tarqatish</p>
+                    </div>
+                </div>
+                <div class="leak-type">
+                    <span class="lt-icon">📧</span>
+                    <div>
+                        <strong>Phishing</strong>
+                        <p>Soxta email/sahifalar orqali login va parollarni o'g'irlash</p>
+                    </div>
+                </div>
+                <div class="leak-type">
+                    <span class="lt-icon">☁️</span>
+                    <div>
+                        <strong>Noto'g'ri cloud sozlamalari</strong>
+                        <p>Ochiq qoldirilgan S3 bucket, GitHub repo yoki boshqa xizmatlar</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics -->
+    <div class="glass-card sec-card">
+        <div class="sec-card-header">
+            <div class="sec-num">02</div>
+            <h2>Global statistika</h2>
+        </div>
+        <div class="sec-body">
+            <div class="stat-boxes">
+                <div class="stat-box">
+                    <div class="sb-num">$4.45M</div>
+                    <div class="sb-label">O'rtacha zarar (2023)</div>
+                </div>
+                <div class="stat-box">
+                    <div class="sb-num">277 kun</div>
+                    <div class="sb-label">O'rtacha aniqlash muddati</div>
+                </div>
+                <div class="stat-box">
+                    <div class="sb-num">83%</div>
+                    <div class="sb-label">Tashkilotlar ikki marta hujumga uchragan</div>
+                </div>
+                <div class="stat-box">
+                    <div class="sb-num">19%</div>
+                    <div class="sb-label">Ichki tahdiddan kelib chiqqan</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How to protect -->
+    <div class="glass-card sec-card">
+        <div class="sec-card-header">
+            <div class="sec-num">03</div>
+            <h2>Qanday himoyalanish kerak?</h2>
+        </div>
+        <div class="sec-body">
+            <div class="protect-list">
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Kuchli parollar ishlatish</strong>
+                        <p>Kamida 12 belgi, katta-kichik harf, raqam va belgilar aralashmasi. Har bir xizmat uchun turli parol.</p>
+                    </div>
+                </div>
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Fayllarni shifrlash</strong>
+                        <p>Muhim fayllarni yuborishdan oldin AES-256 kabi kuchli algoritmlar bilan shifrlang.</p>
+                    </div>
+                </div>
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Ma'lumotlarni minimallash</strong>
+                        <p>Faqat zarur ma'lumotlarni saqlang. Keraksiz fayllarni xavfsiz o'chirib tashlang.</p>
+                    </div>
+                </div>
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Ikki faktorli autentifikatsiya (2FA)</strong>
+                        <p>Barcha muhim xizmatlar uchun 2FA yoqing. SMS o'rniga authenticator app ishlatish yaxshiroq.</p>
+                    </div>
+                </div>
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Xavfsiz uzatish kanallari</strong>
+                        <p>Faqat shifrlangan kanallar (HTTPS, Signal, ProtonMail) orqali ma'lumot yuboring.</p>
+                    </div>
+                </div>
+                <div class="protect-item">
+                    <div class="pi-check">✓</div>
+                    <div>
+                        <strong>Hash orqali yaxlitlik tekshiruvi</strong>
+                        <p>Muhim fayllarni uzatgandan keyin SHA-256 hash orqali o'zgartirilmaganligini tekshiring.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Encryption explained -->
+    <div class="glass-card sec-card">
+        <div class="sec-card-header">
+            <div class="sec-num">04</div>
+            <h2>Shifrlash qanday ishlaydi?</h2>
+        </div>
+        <div class="sec-body">
+            <div class="crypto-flow">
+                <div class="cf-step">
+                    <div class="cf-icon">📄</div>
+                    <div class="cf-label">Asl fayl</div>
+                </div>
+                <div class="cf-arrow">→</div>
+                <div class="cf-step">
+                    <div class="cf-icon">🔑</div>
+                    <div class="cf-label">PBKDF2<br><small>Kalit hosil qilish</small></div>
+                </div>
+                <div class="cf-arrow">→</div>
+                <div class="cf-step">
+                    <div class="cf-icon">⚙️</div>
+                    <div class="cf-label">AES-256-GCM<br><small>Shifrlash</small></div>
+                </div>
+                <div class="cf-arrow">→</div>
+                <div class="cf-step">
+                    <div class="cf-icon">🔐</div>
+                    <div class="cf-label">Shifrlangan<br>fayl</div>
+                </div>
+            </div>
+            <div class="crypto-notes">
+                <p><strong>PBKDF2</strong> — Paroldan kriptografik kalit hosil qilish funktsiyasi. 200,000 iteratsiya brute-force hujumlarini murakkablashtiradi.</p>
+                <p><strong>AES-256-GCM</strong> — Authenticated Encryption with Associated Data (AEAD). Ma'lumotni ham shifrlaydi, ham yaxlitligini kafolatlaydi.</p>
+                <p><strong>Salt + Nonce</strong> — Har shifrlashda tasodifiy qiymatlar ishlatiladi, bir xil parol bilan shifrlangan fayllar har xil ko'rinadi.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="sec-cta">
+        <h3>Hoziroq faylingizni himoyalang</h3>
+        <a href="/upload" class="btn btn-primary">Faylni xavfsiz yuklash →</a>
+    </div>
+</div>
+{% endblock %}

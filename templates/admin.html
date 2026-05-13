@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Admin Panel — SecureCompress{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">Admin <span class="accent">Panel</span></h1>
+        <p class="page-sub">Tizim statistikasi va boshqaruv</p>
+    </div>
+</div>
+
+<div class="admin-container">
+    <!-- Stat Cards -->
+    <div class="admin-stats">
+        <div class="admin-stat-card">
+            <div class="asc-icon">📁</div>
+            <div class="asc-val">{{ stats.total_files }}</div>
+            <div class="asc-label">Jami fayllar</div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="asc-icon">👥</div>
+            <div class="asc-val">{{ stats.total_users }}</div>
+            <div class="asc-label">Foydalanuvchilar</div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="asc-icon">📋</div>
+            <div class="asc-val">{{ stats.total_logs }}</div>
+            <div class="asc-label">Log yozuvlari</div>
+        </div>
+        <div class="admin-stat-card">
+            <div class="asc-icon">🔐</div>
+            <div class="asc-val">AES-256</div>
+            <div class="asc-label">Shifrlash standarti</div>
+        </div>
+    </div>
+
+    <!-- Recent Files -->
+    <div class="glass-card admin-section">
+        <h3 class="admin-sec-title">
+            <span>📤</span> So'nggi fayllar
+        </h3>
+        {% if stats.recent_files %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Fayl nomi</th>
+                    <th>Asl hajm</th>
+                    <th>Siqilgan</th>
+                    <th>Hash</th>
+                    <th>Sana</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in stats.recent_files %}
+                <tr>
+                    <td>{{ f.filename }}</td>
+                    <td>{{ (f.original_size / 1024)|round(1) }} KB</td>
+                    <td>{{ (f.compressed_size / 1024)|round(1) }} KB</td>
+                    <td class="mono">{{ f.hash_sha256[:16] }}...</td>
+                    <td>{{ f.created_at.strftime('%d.%m.%Y %H:%M') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-msg">Hali fayl yo'q</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Logs -->
+    <div class="glass-card admin-section">
+        <h3 class="admin-sec-title">
+            <span>📋</span> Oxirgi operatsiyalar
+        </h3>
+        {% if stats.recent_logs %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Harakat</th>
+                    <th>Holat</th>
+                    <th>IP</th>
+                    <th>Sana</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in stats.recent_logs %}
+                <tr>
+                    <td><span class="action-badge">{{ log.action }}</span></td>
+                    <td>
+                        <span class="badge {{ 'badge-active' if log.status in ['SUCCESS', 'VALID'] else 'badge-expired' }}">
+                            {{ log.status }}
+                        </span>
+                    </td>
+                    <td class="mono">{{ log.ip_address or '—' }}</td>
+                    <td>{{ log.created_at.strftime('%d.%m.%Y %H:%M:%S') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="empty-msg">Hali log yo'q</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

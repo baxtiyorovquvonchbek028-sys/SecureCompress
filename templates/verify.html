@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+{% block title %}Hash Tekshiruvi — SecureCompress{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">Yaxlitlik <span class="accent">tekshiruvi</span></h1>
+        <p class="page-sub">SHA-256 hash orqali faylingiz o'zgartirilgan yoki yo'qligini aniqlang</p>
+    </div>
+</div>
+
+<div class="verify-container">
+    <div class="glass-card verify-card">
+        <div class="card-header">
+            <span class="card-icon">🧮</span>
+            <h2>Hash Tekshiruvi</h2>
+        </div>
+
+        <div class="info-box">
+            <p>📌 Fayl yuklanganda berilgan SHA-256 hash qiymatini kiriting. Tizim faylni qayta hisoblaydi va taqqoslaydi.</p>
+        </div>
+
+        <div class="dropzone" id="verifyDropzone">
+            <div class="dropzone-content" id="verifyDropContent">
+                <div class="drop-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                    </svg>
+                </div>
+                <p>Tekshiriladigan faylni tanlang</p>
+                <label class="btn btn-outline" for="verifyFile">Fayl tanlash</label>
+                <input type="file" id="verifyFile" hidden>
+            </div>
+            <div class="file-preview" id="verifyPreview" style="display:none">
+                <div class="file-icon">📄</div>
+                <div class="file-meta">
+                    <div class="file-name" id="verifyFileName"></div>
+                    <div class="file-size" id="verifyFileSize"></div>
+                </div>
+                <button class="remove-file" id="removeVerifyFile">✕</button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Asl SHA-256 Hash</label>
+            <input type="text" id="hashInput" class="form-input mono" 
+                   placeholder="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                   maxlength="64">
+            <div class="hash-hint">64 belgilik hexadecimal qiymat</div>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="verifyBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            Yaxlitlikni tekshirish
+        </button>
+    </div>
+
+    <!-- Result -->
+    <div class="glass-card verify-result" id="verifyResult" style="display:none">
+        <div class="verify-status" id="verifyStatus">
+            <div class="vr-icon" id="vrIcon"></div>
+            <h2 id="vrTitle"></h2>
+            <p id="vrDesc"></p>
+        </div>
+        <div class="hash-compare">
+            <div class="hc-row">
+                <span class="hc-label">Hisoblangan hash:</span>
+                <code class="hc-val" id="computedHash"></code>
+            </div>
+            <div class="hc-row">
+                <span class="hc-label">Berilgan hash:</span>
+                <code class="hc-val" id="givenHash"></code>
+            </div>
+        </div>
+        <button class="btn btn-ghost" id="verifyAgain">Qayta tekshirish</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+const verifyDropzone = document.getElementById('verifyDropzone');
+const verifyFileInput = document.getElementById('verifyFile');
+const verifyDropContent = document.getElementById('verifyDropContent');
+const verifyPreview = document.getElementById('verifyPreview');
+const verifyFileName = document.getElementById('verifyFileName');
+const verifyFileSize = document.getElementById('verifyFileSize');
+const hashInput = document.getElementById('hashInput');
+const verifyBtn = document.getElementById('verifyBtn');
+const verifyResult = document.getElementById('verifyResult');
+let selectedFile = null;
+
+function updateVerifyBtn() {
+    verifyBtn.disabled = !selectedFile || hashInput.value.trim().length !== 64;
+}
+
+verifyFileInput.addEventListener('change', (e) => {
+    selectedFile = e.target.files[0];
+    if (selectedFile) {
+        verifyDropContent.style.display = 'none';
+        verifyPreview.style.display = 'flex';
+        verifyFileName.textContent = selectedFile.name;
+        verifyFileSize.textContent = formatBytes(selectedFile.size);
+    }
+    updateVerifyBtn();
+});
+
+document.getElementById('removeVerifyFile').addEventListener('click', () => {
+    selectedFile = null;
+    verifyFileInput.value = '';
+    verifyDropContent.style.display = 'flex';
+    verifyPreview.style.display = 'none';
+    updateVerifyBtn();
+});
+
+hashInput.addEventListener('input', () => {
+    hashInput.value = hashInput.value.toLowerCase().replace(/[^0-9a-f]/g, '');
+    updateVerifyBtn();
+});
+
+verifyBtn.addEventListener('click', async () => {
+    if (!selectedFile) return;
+    verifyBtn.disabled = true;
+    verifyBtn.textContent = 'Tekshirilmoqda...';
+
+    const fd = new FormData();
+    fd.append('file', selectedFile);
+    fd.append('hash', hashInput.value.trim());
+
+    try {
+        const res = await fetch('/api/verify', { method: 'POST', body: fd });
+        const data = await res.json();
+
+        if (data.error) {
+            showToast(data.error, 'error');
+            return;
+        }
+
+        verifyResult.style.display = 'block';
+        const icon = document.getElementById('vrIcon');
+        const title = document.getElementById('vrTitle');
+        const desc = document.getElementById('vrDesc');
+
+        if (data.status === 'valid') {
+            icon.textContent = '✓';
+            icon.className = 'vr-icon success';
+            title.textContent = 'Fayl yaxlit!';
+            desc.textContent = 'Hash qiymatlari to\'liq mos keladi. Fayl o\'zgartirilmagan.';
+            verifyResult.className = 'glass-card verify-result status-valid';
+        } else {
+            icon.textContent = '✕';
+            icon.className = 'vr-icon error';
+            title.textContent = 'Fayl buzilgan yoki o\'zgartirilgan!';
+            desc.textContent = 'Hash qiymatlari mos kelmadi. Fayl o\'zgartirilgan bo\'lishi mumkin.';
+            verifyResult.className = 'glass-card verify-result status-tampered';
+        }
+
+        document.getElementById('computedHash').textContent = data.computed_hash;
+        document.getElementById('givenHash').textContent = data.provided_hash;
+        document.getElementById('verifyStatus').scrollIntoView({ behavior: 'smooth' });
+
+    } catch (err) {
+        showToast('Xato yuz berdi', 'error');
+    } finally {
+        verifyBtn.disabled = false;
+        verifyBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg> Yaxlitlikni tekshirish';
+        updateVerifyBtn();
+    }
+});
+
+document.getElementById('verifyAgain').addEventListener('click', () => {
+    verifyResult.style.display = 'none';
+    selectedFile = null;
+    verifyFileInput.value = '';
+    hashInput.value = '';
+    verifyDropContent.style.display = 'flex';
+    verifyPreview.style.display = 'none';
+    updateVerifyBtn();
+});
+
+function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+    return (b/1048576).toFixed(1) + ' MB';
+}
+</script>
+{% endblock %}

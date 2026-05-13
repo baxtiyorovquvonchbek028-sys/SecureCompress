@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% block title %}Fayl yuklash — SecureCompress{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="page-header-inner">
+        <h1 class="page-title">Fayl <span class="accent">yuklash</span></h1>
+        <p class="page-sub">Faylingizni siqish, shifrlash va skanerlash uchun yuklang</p>
+    </div>
+</div>
+
+<div class="upload-container">
+    <!-- Upload Form -->
+    <div class="glass-card upload-card" id="uploadCard">
+        <div class="card-header">
+            <span class="card-icon">📤</span>
+            <h2>Fayl tanlash</h2>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone" id="dropzone">
+            <div class="dropzone-content" id="dropzoneContent">
+                <div class="drop-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                </div>
+                <p class="drop-text">Faylni shu yerga tashlang yoki</p>
+                <label class="btn btn-outline" for="fileInput">Fayl tanlash</label>
+                <input type="file" id="fileInput" hidden>
+                <p class="drop-info">Maksimal: 50MB · txt, pdf, doc, xlsx, csv, json, jpg, png va boshqalar</p>
+            </div>
+            <div class="file-preview" id="filePreview" style="display:none">
+                <div class="file-icon" id="fileIcon">📄</div>
+                <div class="file-meta">
+                    <div class="file-name" id="fileName"></div>
+                    <div class="file-size" id="fileSize"></div>
+                </div>
+                <button class="remove-file" id="removeFile">✕</button>
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+            <label class="form-label">
+                Shifrlash paroli
+                <span class="label-hint">Kamida 6 belgi</span>
+            </label>
+            <div class="password-field">
+                <input type="password" id="passwordInput" class="form-input" placeholder="Kuchli parol kiriting..." autocomplete="new-password">
+                <button class="toggle-pw" id="togglePw" type="button">👁</button>
+            </div>
+            <div class="password-strength" id="pwStrength">
+                <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                </div>
+                <span class="strength-label" id="strengthLabel"></span>
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div class="options-row">
+            <label class="checkbox-label">
+                <input type="checkbox" id="scanData" checked>
+                <span class="checkbox-custom"></span>
+                Maxfiy ma'lumotlarni skanerlash
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" id="genHash" checked>
+                <span class="checkbox-custom"></span>
+                SHA-256 hash yaratish
+            </label>
+        </div>
+
+        <button class="btn btn-primary btn-full" id="processBtn" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Qayta ishlash
+        </button>
+    </div>
+
+    <!-- Progress -->
+    <div class="glass-card progress-card" id="progressCard" style="display:none">
+        <div class="progress-steps">
+            <div class="step" id="step1">
+                <div class="step-icon">📥</div>
+                <div class="step-label">Yuklash</div>
+                <div class="step-bar"><div class="step-fill"></div></div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-icon">📦</div>
+                <div class="step-label">Siqish</div>
+                <div class="step-bar"><div class="step-fill"></div></div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-icon">🔒</div>
+                <div class="step-label">Shifrlash</div>
+                <div class="step-bar"><div class="step-fill"></div></div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-icon">🔍</div>
+                <div class="step-label">Skanerish</div>
+                <div class="step-bar"><div class="step-fill"></div></div>
+            </div>
+        </div>
+        <div class="progress-status" id="progressStatus">Tayyorlanmoqda...</div>
+        <div class="loading-bar-wrap">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+
+    <!-- Result -->
+    <div class="glass-card result-card" id="resultCard" style="display:none">
+        <div class="result-header">
+            <div class="result-icon success">✓</div>
+            <h2>Muvaffaqiyatli qayta ishlandi!</h2>
+        </div>
+
+        <div class="result-grid">
+            <div class="result-stat">
+                <div class="rs-label">Asl hajm</div>
+                <div class="rs-value" id="resOrigSize">—</div>
+            </div>
+            <div class="result-stat">
+                <div class="rs-label">Siqilgan hajm</div>
+                <div class="rs-value accent" id="resCompSize">—</div>
+            </div>
+            <div class="result-stat">
+                <div class="rs-label">Tejash</div>
+                <div class="rs-value gold" id="resRatio">—</div>
+            </div>
+            <div class="result-stat">
+                <div class="rs-label">Shifrlangan</div>
+                <div class="rs-value" id="resEncSize">—</div>
+            </div>
+        </div>
+
+        <div class="hash-box">
+            <div class="hash-label">SHA-256 Hash</div>
+            <div class="hash-value" id="resHash">—</div>
+            <button class="copy-btn" id="copyHash" title="Nusxa olish">⎘</button>
+        </div>
+
+        <div class="warnings-box" id="warningsBox" style="display:none">
+            <div class="warn-header">
+                <span>⚠️</span>
+                <strong>Maxfiy ma'lumotlar aniqlandi!</strong>
+            </div>
+            <ul class="warn-list" id="warnList"></ul>
+        </div>
+
+        <div class="result-actions">
+            <div class="download-form">
+                <input type="password" id="dlPassword" class="form-input" placeholder="Parolni kiriting...">
+                <button class="btn btn-primary" id="downloadBtn">
+                    ⬇ Yuklab olish
+                </button>
+            </div>
+            <button class="btn btn-ghost" id="newUploadBtn">Yangi fayl</button>
+        </div>
+
+        <div class="file-id-box">
+            <span>Fayl ID:</span>
+            <code id="resFileId">—</code>
+            <button class="copy-btn" id="copyId" title="IDni nusxa olish">⎘</button>
+        </div>
+    </div>
+
+    <!-- Error -->
+    <div class="glass-card error-card" id="errorCard" style="display:none">
+        <div class="result-icon error">✕</div>
+        <h3 id="errorMsg">Xato yuz berdi</h3>
+        <button class="btn btn-ghost" id="retryBtn">Qayta urinish</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

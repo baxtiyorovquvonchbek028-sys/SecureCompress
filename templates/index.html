@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}SecureCompress — Fayl xavfsizligi tizimi{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-bg">
+        <div class="grid-lines"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+    <div class="hero-content">
+        <div class="hero-badge">
+            <span class="badge-dot"></span>
+            AES-256 · SHA-256 · PBKDF2
+        </div>
+        <h1 class="hero-title">
+            Ma'lumotlarni<br>
+            <span class="title-accent">himoyalang</span><br>
+            va siqing
+        </h1>
+        <p class="hero-desc">
+            Fayllaringizni professional darajada siqish, shifrlash va maxfiy ma'lumotlardan tozalash tizimi. 
+            Axborot sirqishini oldini oling.
+        </p>
+        <div class="hero-actions">
+            <a href="/upload" class="btn btn-primary">
+                <span>Faylni yuklash</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/security" class="btn btn-ghost">Xavfsizlik haqida</a>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="security-ring">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="shield-core">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M9 12l2 2 4-4"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features -->
+<section class="features">
+    <div class="section-header">
+        <h2 class="section-title">Asosiy <span class="accent">funksiyalar</span></h2>
+        <p class="section-sub">Industrial-grade kriptografiya va siqish algoritmlar</p>
+    </div>
+    <div class="features-grid">
+        <div class="feature-card" data-aos="fade-up">
+            <div class="feature-icon">🔒</div>
+            <h3>AES-256 Shifrlash</h3>
+            <p>Harbiy darajadagi shifrlash. PBKDF2 orqali paroldan kalit hosil qilinadi. 200,000 iteratsiya.</p>
+            <div class="feature-tag">cryptography</div>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-delay="100">
+            <div class="feature-icon">📦</div>
+            <h3>Aqlli Siqish</h3>
+            <p>gzip Level-9 siqish algoritmi. O'rtacha 40-70% hajm tejash. Original fayl nomini saqlaydi.</p>
+            <div class="feature-tag">gzip · deflate</div>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-delay="200">
+            <div class="feature-icon">🔍</div>
+            <h3>Ma'lumot Skaneri</h3>
+            <p>Email, telefon, kredit karta, API kalitlar, JWT tokenlar, SSH kalitlarni avtomatik aniqlash.</p>
+            <div class="feature-tag">regex · NLP</div>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-delay="300">
+            <div class="feature-icon">🧮</div>
+            <h3>Hash Tekshiruvi</h3>
+            <p>SHA-256 orqali fayl yaxlitligini tekshiring. Faylni uzatish yoki saqlashda o'zgarish bo'ldimi?</p>
+            <div class="feature-tag">SHA-256</div>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-delay="400">
+            <div class="feature-icon">⏱️</div>
+            <h3>Auto o'chirish</h3>
+            <p>Fayllar 24 soatdan keyin avtomatik o'chiriladi. Ma'lumotlar serverda qolmaydi.</p>
+            <div class="feature-tag">time-based</div>
+        </div>
+        <div class="feature-card" data-aos="fade-up" data-delay="500">
+            <div class="feature-icon">📊</div>
+            <h3>Admin Panel</h3>
+            <p>Barcha operatsiyalarni kuzating. Log tarixini ko'ring. Statistikani tahlil qiling.</p>
+            <div class="feature-tag">analytics</div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats -->
+<section class="stats-section">
+    <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+            <div class="stat-num" id="statFiles">—</div>
+            <div class="stat-label">Ishlangan fayllar</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num" id="statLogs">—</div>
+            <div class="stat-label">Jami operatsiyalar</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">AES-256</div>
+            <div class="stat-label">Shifrlash standarti</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-num">24h</div>
+            <div class="stat-label">Fayl saqlanish muddati</div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+    <div class="cta-card">
+        <h2>Hoziroq boshlang</h2>
+        <p>Faylingizni yuklang va bir necha soniyada shifrlangan ko'rinishda oling</p>
+        <a href="/upload" class="btn btn-primary btn-lg">
+            Faylni yuklash
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Load live stats
+fetch('/api/stats')
+    .then(r => r.json())
+    .then(d => {
+        document.getElementById('statFiles').textContent = d.total_files || '0';
+        document.getElementById('statLogs').textContent = d.total_logs || '0';
+    }).catch(() => {});
+</script>
+{% endblock %}
